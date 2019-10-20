@@ -1,17 +1,20 @@
 <html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
 <script>
-function openTab(tabName) {
-   var i;
-   var x = document.getElementsByClassName("tab");
-   for (i = 0; i < x.length; i++) {
-      x[i].style.display = "none";
-   }
-   document.getElementById(tabName).style.display = "block";
-}
+    function openTab(tabName) {
+        var i;
+        var x = document.getElementsByClassName("tab");
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+        }
+        document.getElementById(tabName).style.display = "block";
+    }
 </script>
 <script>var whTooltips = {colorLinks: true, iconizeLinks: true, renameLinks: true};</script><script src="https://wow.zamimg.com/widgets/power.js"></script>
 <style>
-html { background-color: #000; };
+html { background-color: #000; }
 .divTable{ display: table; float: left; margin: 10px 10px; }
 .divTableRow { display: table-row; background-color: #000}
 .divTableRow:hover { background-color: #222; }
@@ -19,13 +22,15 @@ html { background-color: #000; };
 .divTableCell, .divTableHead { border: 1px solid #999999; display: table-cell; padding: 3px 10px; }
 .divPlayer { border: 1px solid #999999; display: table-cell; width: 700px; padding: 3px 10px; text-align: left; vertical-align: middle; word-wrap: normal; color: #ffffff; }
 .divClass { border: 1px solid #999999; display: table-cell; padding: 3px 10px; text-align: center; vertical-align: middle; color: #ffffff; }
-.divDKP { border: 1px solid #999999; display: table-cell; width: 200px%; padding: 3px 10px; text-align: center; vertical-align: middle; color: #ffffff; }
+.divDKP { border: 1px solid #999999; display: table-cell; width: 200px; padding: 3px 10px; text-align: center; vertical-align: middle; color: #ffffff; }
 .divPlayerHeader { border: 1px solid #999999; display: table-cell; font-weight: bold; width: 50%; padding: 3px 10px; text-align: left; background-color: #bbb; }
 .divClassHeader { border: 1px solid #999999; display: table-cell; font-weight: bold; width: 150px; padding: 3px 10px; text-align: center; background-color: #bbb; }
 .divDKPHeader { border: 1px solid #999999; display: table-cell; font-weight: bold; width: 30%; padding: 3px 10px; text-align: center; background-color: #bbb; }
 .divTableHeading { background-color: #EEE; display: table-header-group; font-weight: bold; }
 .divTableFoot { background-color: #EEE; display: table-footer-group; font-weight: bold; }
 .divTableBody { display: table-row-group; }
+.sort-active { color: slateblue }
+.sort-btn { cursor: pointer; }
 </style>
 
 <br /><br />
@@ -38,9 +43,18 @@ html { background-color: #000; };
 <div id="DKP" class="tab"><div class="divTable" style="width: 30%;border: 1px solid #000;">
    <div class="divTableBody">
       <div class="divTableRow">
-         <div class="divPlayerHeader">Player</div>
-         <div class="divClassHeader">Class</div>
-         <div class="divDKPHeader">DKP</div>
+         <div class="divPlayerHeader">
+             <span>Player</span>
+             <span id="sort-name" class="sort-btn sort-active">&#x21D5;</span>
+         </div>
+         <div class="divClassHeader">
+             <span>Class</span>
+             <span id="sort-class" class="sort-btn">&#x21D5;</span>
+         </div>
+         <div class="divDKPHeader">
+             <span>DKP</span>
+             <span id="sort-dkp" class="sort-btn">&#x21D5;</span>
+         </div>
       </div>
       <div class="divTableRow">
          <div class="divPlayer">Arwolf</div>
@@ -472,3 +486,60 @@ html { background-color: #000; };
    </div>
 </div>
 </div>
+<script>
+
+    function do_sort(sortType, selector) {
+        var sorted = $('#DKP .divTableRow').not(":first").detach().sort(function (a, b) {
+            var a_val = selector(a);
+            var b_val = selector(b);
+            if (sortType === "asc") {
+                return a_val.localeCompare(b_val);
+            } else {
+                return b_val.localeCompare(a_val);
+            }
+        });
+        $('#DKP .divTableBody').append(sorted);
+    }
+
+    var nameSortType = "asc";
+    var classSortType = "none";
+    var dkpSortType = "none";
+    $(document).ready(function () {
+        $('#sort-name').click(function() {
+            if (nameSortType === "asc") {
+                nameSortType = "desc";
+            } else {
+                nameSortType = "asc";
+            }
+            do_sort(nameSortType, function(ele) {
+                return $(ele).find(".divPlayer").text();
+            });
+            $(".sort-btn").removeClass("sort-active");
+            $("#sort-name").addClass("sort-active");
+        });
+        $('#sort-class').click(function() {
+            if (classSortType === "asc") {
+                classSortType = "desc";
+            } else {
+                classSortType = "asc";
+            }
+            do_sort(classSortType, function(ele) {
+                return $(ele).find(".divClass img").attr("src");
+            });
+            $(".sort-btn").removeClass("sort-active");
+            $("#sort-class").addClass("sort-active");
+        });
+        $('#sort-dkp').click(function() {
+            if (dkpSortType !== "desc") {
+                dkpSortType = "desc";
+            } else {
+                dkpSortType = "asc";
+            }
+            do_sort(dkpSortType, function (ele) {
+                return $(ele).find(".divDKP").text();
+            });
+            $(".sort-btn").removeClass("sort-active");
+            $("#sort-dkp").addClass("sort-active");
+        });
+    });
+</script>
