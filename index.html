@@ -1036,7 +1036,9 @@ html { background-color: #000; }
                 dkpSortType = "asc";
             }
             do_sort(dkpSortType, function (ele) {
-                return $(ele).find(".divDKP").text();
+                var val = $(ele).find(".divDKP").text();
+                var pad = "0000";
+                return pad.substring(0, pad.length - val.length) + val;
             });
             $(".sort-btn").removeClass("sort-active");
             $("#sort-dkp").addClass("sort-active");
