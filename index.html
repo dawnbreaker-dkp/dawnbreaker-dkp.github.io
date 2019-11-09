@@ -1011,6 +1011,25 @@ html { background-color: #000; }
         $('#DKP .divTableBody').append(sorted);
     }
 
+    var editEnabled = false;
+    function doEdit() {
+        if (editEnabled) {
+            editEnabled = false;
+            $('#DKP').find('.divDKP').each(function (i, ele) {
+                var val = $(ele).find(":input").val();
+                $(ele).find(":input").remove();
+                $(ele).text(val);
+            });
+        } else {
+            editEnabled = true;
+            $('#DKP').find('.divDKP').each(function (i, ele) {
+                var text = $(ele).text();
+                $(ele).text('');
+                $(ele).html($('<input />', { 'value': text }).val(text));
+            });
+        }
+    }
+
     var nameSortType = "asc";
     var classSortType = "none";
     var dkpSortType = "none";
@@ -1053,5 +1072,11 @@ html { background-color: #000; }
             $(".sort-btn").removeClass("sort-active");
             $("#sort-dkp").addClass("sort-active");
         });
+        $(document).on('keypress', function (e) {
+            var keycode = event.keyCode || event.which;
+            if (keycode == '13') {
+                doEdit();
+            }
+        })
     });
 </script>
